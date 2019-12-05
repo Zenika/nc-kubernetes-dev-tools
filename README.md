@@ -22,5 +22,5 @@
 L'objectif de cette Nightclazz est de se familiariser avec quelques outils de
 la galaxie Kubernetes qui permettent :
 - De simplifier les déploiement
-- D'utiliser Kubernetes au plus tôt
+- D'utiliser Kubernetes au plus tôt et d'en simplifier l'usage
 - De profiter de fonctions de live-reload dès le développement
