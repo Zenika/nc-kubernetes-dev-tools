@@ -1,1 +1,2 @@
-tools/params.env
+tools/gitlab/params.env
+tools/gitlab/certs/*
