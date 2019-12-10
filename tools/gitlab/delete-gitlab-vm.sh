@@ -13,7 +13,7 @@ gcloud compute -q \
     --project=${GOOGLE_PROJECT_ID} \
     firewall-rules delete default-allow-ssh
 
-echo "Removing ssh registry rule..."
+echo "Removing registry firewall rule..."
 gcloud compute -q \
     --project=${GOOGLE_PROJECT_ID} \
     firewall-rules delete default-allow-registry
