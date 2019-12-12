@@ -16,11 +16,23 @@
   - k3s/k3d
   - kustomize
   - skaffold
+- Astuces
 
 ## Présentation générale
 
 L'objectif de cette Nightclazz est de se familiariser avec quelques outils de
 la galaxie Kubernetes qui permettent :
+
 - De simplifier les déploiement
 - D'utiliser Kubernetes au plus tôt et d'en simplifier l'usage
 - De profiter de fonctions de live-reload dès le développement
+
+## Astuces/Bonne pratiques
+
+- Utilisez [buildkit](https://github.com/moby/buildkit)
+
+![Activer buildkit](resources/images/buildkit-setup.png)
+
+- Utilisez .dockerignore
+- N'utilisez pas de tag `latest`
+- Si ce n'est pas sur git, ça n'existe pas
