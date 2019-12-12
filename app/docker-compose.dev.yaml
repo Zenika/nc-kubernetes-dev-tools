@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  web:
+    build: .
+    image: hello-go
+    ports:
+    - 8080:80
+    volumes:
+    - ./config/default.json:/default.json:ro
+    - ./config/dev.json:/config.json:ro
