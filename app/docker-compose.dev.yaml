@@ -5,7 +5,7 @@ services:
     build: .
     image: hello-go
     ports:
-    - 8080:80
+    - 8080:8080
     volumes:
     - ./config/default.json:/default.json:ro
     - ./config/dev.json:/config.json:ro
