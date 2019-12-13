@@ -9,3 +9,9 @@ build:
 deploy:
   kustomize:
     path: ./kustomize/overlays/local
+portForward:
+- resourceType: deployment
+  resourceName: base
+  namespace: default  # 
+  port: 8080 # 
+  localPort: 9000 # *Optional*
