@@ -8,7 +8,7 @@ echo "* Creating gitlab user"
 curl -H "Content-type: application/json" \
   -H "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
   -X POST https://gitlab.pyaillet.tech/api/v4/users \
-  --data "{\"email\":\"${USER}@${USER}.here\",\"username\":\"${USER}\",\"name\":\"${USER}\",\"password\":\"${USER}_p4ssword\"}" | tee /tmp/user_created
+  --data "{\"email\":\"${USER}@${USER}.here\",\"username\":\"${USER}\",\"name\":\"${USER}\",\"password\":\"${USER}_p4ssword\",\"skip_confirmation\":\"true\"}" | tee /tmp/user_created
 echo
 USER_ID=$(jq '.id' /tmp/user_created)
 
