@@ -49,14 +49,32 @@ Félicitations ! La mise en place est terminée.
 
 ## Étapes
 
+L'application exemple est une application ultra-minimaliste. L'objectif n'est pas de s'attarder sur le code de l'application mais de se concentrer sur les aspects suivants :
+
+- construction d'une image en intégration continue
+- déploiement automatisée de l'application sur différents environnements
+- gestion des différences de configuration entre les environnements
+
 Les étapes suivantes doivent vous permettre de déployer votre projet sur kubernetes en utilisant des pipelines de type gitops.
-Pour vous faire une idée plus précise
+Pour vous faire une idée plus précise de l'objectif, vous pouvez consulter les `docker-compose` exemples qui donnent un aperçu de l'application déployée dans un environnement "dev" et dans un environnement "prod".
 
 ### Mise en place de l'intégration continue
 
+La première étape consiste à construire l'image Docker de l'application en utilisant `gitlab-ci`.
+Malheureusement, l'instance gitlab utilise un runner déployé sur gke sans privilège ce qui ne permet pas de construire les images en utilisant simplement [Docker in Docker](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-workflow-with-docker-executor).
 
+Il sera donc nécessaire d'utiliser un autre outil qui permet de construire des images de conteneur sans être en mode privilégié.
+Cette [présentation] donne une assez bonne idée de la diversité de ces outils et de bons pointeurs pour les comparer.
+Ce qu'il faut en retenir, est que par défaut la construction d'images Docker en utilisant Docker nécessite un niveau de privilège élevé ce qui n'est pas forcément une bonne idée.
+
+Dans notre cas, nous nous concentrerons sur [kaniko](https://github.com/GoogleContainerTools/kaniko).
+La [documentation officielle de gitlab](https://docs.gitlab.com/ee/ci/docker/using_kaniko.html) indique comment intégrer un build et un push d'image Docker sur gitlab-ci en utilisant kaniko.
+
+Utilisez cette documentation pour mettre en place la construction sur votre projet.
 
 ### Déploiement d'une application en dev via descripteurs
+
+
 
 ### Déploiement de l'application en dev via kustomize
 
