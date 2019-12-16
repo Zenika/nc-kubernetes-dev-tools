@@ -2,20 +2,25 @@
 
 # Usage ./k8s-service-account-kubeconfig.sh ( namespace ) ( service account name )
 
+NS=$1
+SA=$2
+
 TEMPDIR=$( mktemp -d )
 
 trap "{ rm -rf $TEMPDIR ; exit 255; }" EXIT
 
-SA_SECRET=$( kubectl get sa -n $1 $2 -o jsonpath='{.secrets[0].name}' )
+SA_SECRET=$( kubectl get sa -n ${NS} ${SA} -o jsonpath='{.secrets[0].name}' )
 
 # Pull the bearer token and cluster CA from the service account secret.
-BEARER_TOKEN=$( kubectl get secrets -n $1 $SA_SECRET -o jsonpath='{.data.token}' | base64 -d )
-kubectl get secrets -n $1 $SA_SECRET -o jsonpath='{.data.ca\.crt}' | base64 -d > $TEMPDIR/ca.crt
+BEARER_TOKEN=$( kubectl get secrets -n ${NS} $SA_SECRET -o jsonpath='{.data.token}' | base64 -d )
+kubectl get secrets -n ${NS} $SA_SECRET -o jsonpath='{.data.ca\.crt}' | base64 -d > $TEMPDIR/ca.crt
 
 CLUSTER_URL="https://$(gcloud container clusters describe nc-kubedev --format json | jq -r '.endpoint')"
 
 
 KUBECONFIG=kubeconfig
+
+rm -f $KUBECONFIG
 
 kubectl config --kubeconfig=$KUBECONFIG \
     set-cluster \
@@ -25,14 +30,12 @@ kubectl config --kubeconfig=$KUBECONFIG \
     --embed-certs=true 1>/dev/null
 
 kubectl config --kubeconfig=$KUBECONFIG \
-    set-credentials $2 --token=$BEARER_TOKEN 1>/dev/null
+    set-credentials ${SA} --token=$BEARER_TOKEN 1>/dev/null
 
 kubectl config --kubeconfig=$KUBECONFIG \
     set-context registry \
     --cluster=$CLUSTER_URL \
-    --user=$2 1>/dev/null
+    --user=${SA} 1>/dev/null
 
 kubectl config --kubeconfig=$KUBECONFIG \
     use-context registry 1>/dev/null
-
-cat $KUBECONFIG
