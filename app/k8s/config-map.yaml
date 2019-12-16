@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: base
+  labels:
+    app: base
+data:
+  default.json: |
+    {
+      "Port": "8080"
+    }
+  config.json: |
+    {
+      "Name": "DEVELOPMENT"
+    } 

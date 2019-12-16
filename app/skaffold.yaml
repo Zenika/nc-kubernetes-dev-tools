@@ -1,0 +1,17 @@
+apiVersion: skaffold/v1
+kind: Config
+build:
+  artifacts:
+  - image: gitlab.pyaillet.tech:5050/nc-kubernetes/base
+    context: .
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kustomize:
+    path: ./kustomize/overlays/local
+portForward:
+- resourceType: deployment
+  resourceName: base
+  namespace: default  # 
+  port: 8080 # 
+  localPort: 9000 # *Optional*
