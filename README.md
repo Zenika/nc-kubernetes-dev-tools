@@ -74,7 +74,40 @@ Utilisez cette documentation pour mettre en place la construction sur votre proj
 
 ### Déploiement d'une application en dev via descripteurs
 
+Une fois la construction de l'image Docker réalisée, il faut maintenant déployer l'application sur Kubernetes.
+Afin de faire en sorte que l'application soit déployée et utilisable, il sera nécessaire de créer 4 descripteurs :
 
+- 1 descripteur de [déploiement](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment)
+- 1 descripteur de [service](https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service)
+- 1 descripteur de [configmap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#create-configmaps-from-directories) comprenant les fichiers de configurations en environnment de dev
+- 1 descripteur d'ingress, regardez l'exemple ci-après. L'ingress controller [traefik](https://docs.traefik.io/) est déjà déployé sur le cluster)
+
+Pour l'ingress à utiliser inspirez-vous de l'exemple suivant :
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: base
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: CHANGE_ME.35.234.90.180.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: base
+          servicePort: 8080
+```
+
+Modifiez CHANGE_ME pour qu'il corresponde au modèle suivant : <USER>_<NAMESPACE>.
+
+Une fois ces descripteurs réalisés, déployez l'application en modifiant le fichier `.gitlab-ci.yml` afin :
+
+- d'ajouter la commande `kubectl`
+- de préciser le kubeconfig utilisé issu des variables du group gitlab (choisir KUBECONFIG_DEV)
+- de préciser le namespace de destination directement via `kubectl`
 
 ### Déploiement de l'application en dev via kustomize
 
@@ -89,8 +122,6 @@ Utilisez cette documentation pour mettre en place la construction sur votre proj
 ### Kustomize
 
 Kusto
-
-### Kubectl
 
 ### Skaffold
 
