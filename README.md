@@ -16,6 +16,7 @@
   - k3s/k3d
   - kustomize
   - skaffold
+- Astuces
 
 ## Présentation générale
 
@@ -56,3 +57,12 @@ Kusto
 
 ## Annexe/Outils
 
+## Astuces/Bonne pratiques
+
+- Utilisez [buildkit](https://github.com/moby/buildkit)
+
+![Activer buildkit](resources/images/buildkit-setup.png)
+
+- Utilisez .dockerignore
+- N'utilisez pas de tag `latest`
+- Si ce n'est pas sur git, ça n'existe pas
