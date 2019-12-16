@@ -39,23 +39,24 @@ for ENV in prod dev; do
   echo "* Create k9s user role"
   kubectl apply -f k9s-user.yaml
   echo "* Bind clusterrole to sa"
-  kubectl create clusterrolebinding ${USER}-k9s-user-binding --clusterrole=k9s-user --serviceaccount=${NAMESPACE}:${USER}
+  kubectl create clusterrolebinding ${USER}-${ENV}-k9s-user-binding --clusterrole=k9s-user --serviceaccount=${NAMESPACE}:${USER}
 
   echo "* Create ns owner role"
   kubectl apply -n ${NAMESPACE} -f ns-owner.yaml
   echo "* Bind role to sa"
-  kubectl create -n ${NAMESPACE} rolebinding ${USER}-ns-owner --role=ns-owner --serviceaccount=${NAMESPACE}:${USER}
+  kubectl create -n ${NAMESPACE} rolebinding ${USER}-${ENV}-ns-owner --role=ns-owner --serviceaccount=${NAMESPACE}:${USER}
   echo "* Get base64 kubeconfig"
   ./k8s-service-account-kubeconfig.sh ${NAMESPACE} ${USER}
   KC=$(cat ./kubeconfig)
   echo ${KC}
 
   echo "* Creating kubeconfig var"
-  curl -H "Content-type: application/json" \
+  #curl -H "Content-type: application/json" \
+  curl \
     -H "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-    -X POST https://gitlab.pyaillet.tech/api/v4/groups/${GROUP_ID}/variables \
-    --data "{\"key\":\"KUBECONFIG_$(echo ${ENV} | tr a-z A-Z)\",\"value\":\"${KC}\",\"variable_type\":\"file\",\"protected\":\"true\"}"
+    -X POST https://gitlab.pyaillet.tech/api/v4/groups/${USER}_group/variables \
+    --data "key=KUBECONFIG_$(echo ${ENV} | tr a-z A-Z)&value=$(jq -sRr @uri kubeconfig)&variable_type=file&protected=true"
   echo
-  echo "{\"key\":\"KUBECONFIG_$(echo ${ENV} | tr a-z A-Z)\",\"value\":\"${KC}\",\"variable_type\":\"file\",\"protected\":\"true\"}"
+  echo "key=KUBECONFIG_$(echo ${ENV} | tr a-z A-Z)&value=$(jq -sRr @uri kubeconfig)&variable_type=file&protected=true"
 
 done
