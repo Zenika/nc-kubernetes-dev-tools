@@ -109,6 +109,8 @@ Une fois ces descripteurs réalisés, déployez l'application en modifiant le fi
 - de préciser le kubeconfig utilisé issu des variables du group gitlab (choisir KUBECONFIG_DEV)
 - de préciser le namespace de destination directement via `kubectl`
 
+Une fois l'application déployée, vous devez pouvoir consulter le résultat en ouvrant dans votre navigateur l'adresse déclarée dans l'ingress : [http://CHANGE_ME.35.234.90.180.xip.io](http://CHANGE_ME.35.234.90.180.xip.io)
+
 ### Outils k9s / kubens / kubectx
 
 Afin de s'assurer que tout fonctionne correctement, il est nécessaire de se connecter au cluster et de vérifier le statut des différentes ressources.
@@ -123,19 +125,45 @@ Il est installable très facilement en téléchargeant le binaire pour votre OS 
 
 Si vous rencontrez des problèmes, n'hésitez pas à faire un appel à un animateur, à un autre participant ou à consulter [ce guide](https://learnk8s.io/troubleshooting-deployments) qui fournit une procédure pour identifier les problèmes lorsqu'un déploiement sur Kubernetes est en échec.
 
-### Déploiement de l'application en dev via kustomize
+### Déploiement de l'application en dev/prod via kustomize
 
-### Déploiement de l'application en prod via kustomize
+Le mode de déploiement que nous avons vu n'est pas idéal :
 
-### (Optionnel) Déploiement de l'application en local via helm template
+- La configuration est partiellement identique entre l'environnement prod et dev, mais partiellement différente
+- Les ingress sont partiellement différents entre les environnements
+- Les déploiements et services sont identiques au namespaces près
+
+L'outil [kustomize](https://github.com/kubernetes-sigs/kustomize) propose de réaliser des déploiements sur Kubernetes en composant les différents descripteurs et leur configuration.
+
+Son fonctionnement est finalement assez simple :
+
+- Une kustomization est un répertoire contenant un fichier descripteur `kustomization.yaml`.
+- Ce fichier référence des ressources Kubernetes, les informations permettant de créer des configmaps, d'ajouter des metadonnées aux ressources Kubernetes
+- Il est possible de distinguer :
+  - une `kustomization` de base qui est commune aux différents environnements
+  - des `overlays` qui viennent compléter et/ou surcharger une partie de la base
+
+Une fois les descripteurs écrits, il est possible de les déployer :
+
+- soit en produisant les descripteurs avec la commande `kustomize` et en les déployant avec `kubectl`
+- soit directement avec `kubectl` en utilisant le flag `-k`
+- il est également possible de pré-visualiser ce qui sera déployé avec `kubectl` avec la commande suivante : `kubectl apply -k overlays/dev --dry-run -o yaml`
+
+L'objectif de cette étape est donc d'écrire la base et les overlays kustomize pour les environnements dev et prod.
+
+Petit indice :
+
+- la base référencera :
+  - la configuration commune, générée avec un [configMapGenerator](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/configGeneration.md)
+  - le déploiement
+  - le service
+- les overlays référenceront :
+  - la config spécifique [en mergeant une clé supplémentaire](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/combineConfigs.md#create-and-use-the-overlay-for-production) à la configmap générée par la base
+  - l'ingress
+
+Une fois ces descripteurs créés, déployez l'application sur le cluster en modifiant le fichier `.gitlab-ci.yml` afin d'ajouter la commande de déploiement : `kubectl --kubeconfig $KUBECONFIG_DEV apply -k kustomize/overlays/dev`
 
 ### Mise en place de skaffold pour déployer avec live-reload sur la dev
-
-## Annexe/Outils
-
-### Kustomize
-
-Kusto
 
 ### Skaffold
 
