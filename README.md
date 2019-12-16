@@ -109,6 +109,20 @@ Une fois ces descripteurs réalisés, déployez l'application en modifiant le fi
 - de préciser le kubeconfig utilisé issu des variables du group gitlab (choisir KUBECONFIG_DEV)
 - de préciser le namespace de destination directement via `kubectl`
 
+### Outils k9s / kubens / kubectx
+
+Afin de s'assurer que tout fonctionne correctement, il est nécessaire de se connecter au cluster et de vérifier le statut des différentes ressources.
+Pour cela, récupérer le contenu de la variable KUBECONFIG_DEV et copier le dans le fichier `~/.kube/config-dev` sur votre machine.
+Il est possible d'utiliser la commande `kubectl` avec la variable d'environnement KUBECONFIG=~/.kube/config-dev.
+Afin de simplifier les manipulations, vous pouvez utiliser les outils [kubectx/kubens](https://github.com/ahmetb/kubectx) qui permettent de changer facilement le `namespace` ou le contexte kubernetes vers lequel vous pointez.
+Il est également possible de changer carrément le `kubeconfig` que vous utilisez : https://github.com/pyaillet/dotfiles/blob/master/.zshrc.d/080_switch_kubeconfig
+
+[K9s](https://github.com/derailed/k9s) est un autre outil qui simplifie grandement le déboguage sur Kubernetes.
+Il se présente comme un dashboard kubernetes utilisable dans un terminal ayant l'avantage de fournir des raccourcis clavier très efficaces.
+Il est installable très facilement en téléchargeant le binaire pour votre OS (voir la section Assets de chaque release).
+
+Si vous rencontrez des problèmes, n'hésitez pas à faire un appel à un animateur, à un autre participant ou à consulter [ce guide](https://learnk8s.io/troubleshooting-deployments) qui fournit une procédure pour identifier les problèmes lorsqu'un déploiement sur Kubernetes est en échec.
+
 ### Déploiement de l'application en dev via kustomize
 
 ### Déploiement de l'application en prod via kustomize
