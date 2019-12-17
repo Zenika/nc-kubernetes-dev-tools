@@ -165,9 +165,54 @@ Une fois ces descripteurs créés, déployez l'application sur le cluster en mod
 
 ### Mise en place de skaffold pour déployer avec live-reload sur la dev
 
-### Skaffold
+Une fois cette chaîne d'intégration mise en place vos déploiements sont automatisés et sécurisés (au sens reproductibles et validés).
+Le déploiement d'une nouvelle version doit se résumer à un merge/tag ou au clic sur un bouton de l'intégration continue.
 
-### K3d
+Néanmoins, il peut-être fastidieux de tester rapidement une modification qui impacterait le code, la configuration et/ou les descripteurs de déploiement.
+Pour cela, il est possible d'utiliser d'autres outils qui vont vous permettre de tester toutes ces modifications en local, mais en utilisant les mêmes mécaniques de construction et déploiement que vous utilisez pour déployer en production.
+
+Pour cela, nous allons utiliser 2 outils :
+
+- 1 outil qui permet de créer un cluster Kubernetes en local, nous avons choisi [k3d](https://github.com/rancher/k3d) car il est léger et simple à déployerk, mais il en existe bien d'autres qui sont comparés dans cet [article](https://www.aukfood.fr/labos-de-clusters-kubernetes/) ou dans ce [commentaire reddit](https://www.reddit.com/r/kubernetes/comments/be0415/k3s_minikube_or_microk8s/)
+- [skaffold](https://github.com/GoogleContainerTools/skaffold) qui permet d'enchainer les étapes de construction et de déploiement en local automatiquement
+
+#### K3d
+
+Pour utiliser k3d, il faut avoir installé Docker sur votre poste et télécharger [le binaire](https://github.com/rancher/k3d/releases) pour votre OS.
+Ensuite pour créer un cluster Kubernetes minimaliste lancez la commande : `k3d create cluster`
+
+Attention, le fichier `kubeconfig` permettant d'accéder au cluster `k3d` n'est pas créé à l'emplacement standard.
+Exemple sur un Mac :
+```sh
+▶ k3d get-kubeconfig --name='k3s-default'
+/Users/pyaillet/.config/k3d/k3s-default/kubeconfig.yaml
+```
+
+Pour vérifier que le cluster fonctionne, vous pouvez lancer la commande : `kubectl get nodes --kubeconfig=$(k3d get-kubeconfig --name='k3s-default')`
+
+#### Skaffold
+
+
+
+```yaml
+apiVersion: skaffold/v1
+kind: Config
+build:
+  artifacts:
+  - image: gitlab.pyaillet.tech:5050/nc-kubernetes/base
+    context: .
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kustomize:
+    path: ./kustomize/overlays/local
+portForward:
+- resourceType: deployment
+  resourceName: base
+  namespace: default  # 
+  port: 8080 # 
+  localPort: 9000 # *Optional*
+```
 
 ## Solutions
 
