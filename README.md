@@ -101,7 +101,7 @@ spec:
           servicePort: 8080
 ```
 
-Modifiez CHANGE_ME pour qu'il corresponde au modèle suivant : <USER>_<NAMESPACE>.
+Modifiez CHANGE_ME pour qu'il corresponde au modèle suivant : `<USER>_<NAMESPACE>.
 
 Une fois ces descripteurs réalisés, déployez l'application en modifiant le fichier `.gitlab-ci.yml` afin :
 
