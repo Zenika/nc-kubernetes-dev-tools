@@ -183,6 +183,7 @@ Ensuite pour créer un cluster Kubernetes minimaliste lancez la commande : `k3d 
 
 Attention, le fichier `kubeconfig` permettant d'accéder au cluster `k3d` n'est pas créé à l'emplacement standard.
 Exemple sur un Mac :
+
 ```sh
 ▶ k3d get-kubeconfig --name='k3s-default'
 /Users/pyaillet/.config/k3d/k3s-default/kubeconfig.yaml
@@ -190,9 +191,12 @@ Exemple sur un Mac :
 
 Pour vérifier que le cluster fonctionne, vous pouvez lancer la commande : `kubectl get nodes --kubeconfig=$(k3d get-kubeconfig --name='k3s-default')`
 
+Malheureusement, accéder aux ingress via k3d ou kind peut être plus complexe, si le sujet vous intéresse, consultez cet [article](https://blog.kubernauts.io/k3s-with-k3d-and-metallb-on-mac-923a3255c36e)
+
 #### Skaffold
 
-
+Pour installer skaffold, téléchargez simplement le binaire pour votre OS.
+Vous pouvez alors utiliser le descripteur ci-après :
 
 ```yaml
 apiVersion: skaffold/v1
@@ -213,6 +217,15 @@ portForward:
   port: 8080 # 
   localPort: 9000 # *Optional*
 ```
+
+Ce descripteur permet de construire une image Docker, de déployer sur un le cluster kubernetes pointé par votre kubeconfig en utilisant l'overlay de kustomization du répertoire `./kustomize/overlays/local` (à vous de le créer ou copiez celui de dev).
+
+Dès que vous lancez la commande : `skaffold dev --port-forward`, vous bénéficierez d'un aperçu de votre application déployé sur votre cluster local en utilisant les mêmes mécanismes que ceux qui permettent de déployer en production.
+Vous pouvez alors faire une modification du fichier `main.go`, par exemple en changeant le message de démarrage ou la chaîne `"Hello, %s!"`. Dès la sauvegarde effectuée, vous verrez que l'image sera reconstruire et redéployée automatiquement.
+Vous bénéficierez aussi :
+
+- D'un [port-forward](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) vers le Pod qui vous intéresse
+- Du stream des logs du Pod en direct
 
 ## Solutions
 
