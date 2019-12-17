@@ -82,6 +82,8 @@ Afin de faire en sorte que l'application soit déployée et utilisable, il sera 
 - 1 descripteur de [configmap](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#create-configmaps-from-directories) comprenant les fichiers de configurations en environnment de dev
 - 1 descripteur d'ingress, regardez l'exemple ci-après. L'ingress controller [traefik](https://docs.traefik.io/) est déjà déployé sur le cluster)
 
+Au démarrage, l'application cherche les valeurs `Name` et `Port` dans les fichiers default et config du répertoire /config/.
+
 Pour l'ingress à utiliser inspirez-vous de l'exemple suivant :
 
 ```yaml
@@ -101,7 +103,7 @@ spec:
           servicePort: 8080
 ```
 
-Modifiez CHANGE_ME pour qu'il corresponde au modèle suivant : `<USER>_<NAMESPACE>`.
+Modifiez CHANGE_ME pour qu'il corresponde au modèle suivant : `<USER>-<NAMESPACE>`.
 
 Une fois ces descripteurs réalisés, déployez l'application en modifiant le fichier `.gitlab-ci.yml` afin :
 
