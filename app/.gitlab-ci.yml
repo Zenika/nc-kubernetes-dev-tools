@@ -17,21 +17,24 @@ build:
 
 deploy_dev_manual:
   stage: deploy
+  image: bitnami/kubectl:1.14.3
   script:
-    - kubectl apply -f k8s/
+    - kubectl apply -n base-dev --kubeconfig $KUBECONFIG_DEV -f k8s/
   when:
     manual
 
 deploy_dev_kustomize:
   stage: deploy
+  image: bitnami/kubectl:1.14.3
   script:
-    - kubectl apply -k kustomize/overlays/dev/
+    - kubectl apply --kubeconfig $KUBECONFIG_DEV -k kustomize/overlays/dev/
   when:
     manual
 
 deploy_prod_kustomize:
   stage: deploy
+  image: bitnami/kubectl:1.14.3
   script:
-    - kubectl apply -k kustomize/overlays/prod/
+    - kubectl apply --kubeconfig $KUBECONFIG_PROD -k kustomize/overlays/prod/
   when:
     manual
