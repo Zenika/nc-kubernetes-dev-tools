@@ -1,0 +1,36 @@
+stages:
+  - build
+  - deploy
+  
+build:
+  stage: build
+  script:
+    - echo "Construction et push de l'image"
+    - echo "EDIT_ME"
+
+deploy_dev_manual:
+  stage: deploy
+  image: bitnami/kubectl:1.14.3
+  script:
+    - echo "Déploiement manuel (configuration dev) via descripteurs k8s"
+    - echo "EDIT_ME"
+  when:
+    manual
+
+deploy_dev_kustomize:
+  stage: deploy
+  image: bitnami/kubectl:1.14.3
+  script:
+    - echo "Déploiement overlay dev via kustomize"
+    - echo "EDIT_ME"
+  when:
+    manual
+
+deploy_prod_kustomize:
+  stage: deploy
+  image: bitnami/kubectl:1.14.3
+  script:
+    - echo "Déploiement overlay prod via kustomize"
+    - echo "EDIT_ME"
+  when:
+    manual
