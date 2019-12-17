@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: base
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: base-dev.35.234.90.180.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: base
+          servicePort: 80
